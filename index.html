@@ -55,6 +55,11 @@
         this.load.image('lil_robo', 'assets/lil_robo.png');
         this.load.image('ball', 'assets/glitch_ball.png');
 
+        this.load.image('robo_float1', 'assets/robo_float_1.png')
+        this.load.image('robo_float2', 'assets/robo_float_2.png');
+        this.load.image('robo_float3', 'assets/robo_float_3.png');
+        this.load.image('robo_float4', 'assets/robo_float_4.png');
+
         // this.load.image('bomb', 'assets/bomb.png');
         // this.load.spritesheet('dude',
         // 'assets/dude.png',
@@ -70,9 +75,22 @@
     var bumper_right;
     var jet_left;
     var jet_right;
+    var floaty;
 
     function create ()
     {
+
+        this.anims.create({
+            key: 'float',
+            frames: [
+                { key: 'robo_float1'},
+                { key: 'robo_float2'},
+                { key: 'robo_float3'},
+                { key: 'robo_float4', duration: 50}
+            ],
+            frameRate: 8,
+            repeat: -1
+        })
 
         this.add.image(0, 0, 'backsky').setOrigin(0,0);
 
@@ -97,6 +115,19 @@
         bumper_left.setFriction(0.005);
         bumper_right.setFriction(0.005);
 
+        table.lineStyle(5, '#ffffff', 0.2);
+        table.beginPath();
+        table.moveTo(0, 320);
+        table.lineTo(800, 320);
+        table.closePath();
+        table.strokePath();
+
+        floaty = this.matter.add.sprite(-80, 288, 'robo_float1').play('float');
+        floaty.setCircle();
+        floaty.setFriction(0.005);
+        floaty.setBounce(0.95);
+        floaty.setAngularVelocity(0.18);
+        floaty.setStatic(true);
         // bumpers = this.physics.add.staticGroup();
 
         // bumpers.create(200, 550, 'ground').setScale(0.5).refreshBody();
@@ -142,10 +173,13 @@
     function update ()
     {
         console.log('test!');
+
         // bumper_left.rotation = 0.5
 
         bumper_left.setAngularVelocity(0);
         bumper_right.setAngularVelocity(0);
+
+        floaty.x += 1;
 
         if (z.isDown)
         {
