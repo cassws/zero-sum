@@ -1,0 +1,202 @@
+<!doctype html> 
+<html lang="en"> 
+<head> 
+    <meta charset="UTF-8" />
+    <title>ZERO SUM</title>
+    <script src="//cdn.jsdelivr.net/npm/phaser@3.11.0/dist/phaser.js"></script>
+    <!-- <script src="//cdnjs.cloudflare.com/ajax/libs/matter-js/0.12.0/matter.js"></script> -->
+    <style type="text/css">
+        body {
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+
+<script type="text/javascript">
+
+    var config = {
+        type: Phaser.AUTO,
+        width: 800,
+        height: 800,
+        physics: {
+            default: 'matter',
+            matter: {
+            gravity: {
+                x: 0,
+                y: 0.72
+            }
+        }
+            
+        },
+        scene: {
+            preload: preload,
+            create: create,
+            update: update
+        }
+    };
+    var z;
+    var m;
+
+    var game = new Phaser.Game(config);
+
+
+    function preload ()
+    {
+        this.load.image('backsky', 'assets/backsky.png');
+        this.load.image('flipper_left', 'assets/platform.png');
+        this.load.image('flipper_right', 'assets/flipper_right.png');
+        // this.load.image('weird_arms', 'assets/weird_arms.png');
+        this.load.image('jet_left', 'assets/jet_right.png');
+        this.load.image('jet_right', 'assets/jet_left.png');
+
+        this.load.image('star', 'assets/star.png');
+
+        this.load.image('lil_robo', 'assets/lil_robo.png');
+        this.load.image('ball', 'assets/glitch_ball.png');
+
+        // this.load.image('bomb', 'assets/bomb.png');
+        // this.load.spritesheet('dude',
+        // 'assets/dude.png',
+        // { frameWidth: 32, frameHeight: 48}
+        // );
+    }
+
+
+    var platforms;
+
+    var ball;
+    var bumper_left;
+    var bumper_right;
+    var jet_left;
+    var jet_right;
+
+    function create ()
+    {
+
+        this.add.image(0, 0, 'backsky').setOrigin(0,0);
+
+        table = this.add.graphics();
+
+        table.fillStyle(0xffffff, 0.2);
+
+        //  32px radius on the corners
+        table.fillRoundedRect(264, 32, 274, 560, 32);
+        this.matter.world.setBounds(264, 32, 274, 560);
+
+        this.add.image(110, 620, 'lil_robo').setOrigin(0,0).setScale(0.5);
+        // this.add.image(400, 395, 'weird_arms');
+        
+        
+        bumper_left = this.matter.add.image(264, 512, 'flipper_left');
+        bumper_right = this.matter.add.image(536, 512, 'flipper_right');
+        bumper_left.setStatic(true);
+        bumper_right.setStatic(true);
+        bumper_left.setAngle(30);
+        bumper_right.setAngle(-30);
+        bumper_left.setFriction(0.005);
+        bumper_right.setFriction(0.005);
+
+        // bumpers = this.physics.add.staticGroup();
+
+        // bumpers.create(200, 550, 'ground').setScale(0.5).refreshBody();
+        // bumpers.create(600, 550, 'ground').setScale(0.5).refreshBody();
+
+        jet_left = this.matter.add.sprite(50, 736, 'jet_left')
+        jet_right = this.matter.add.sprite(361, 733, 'jet_right');
+        jet_left.setAngle(-20);
+        jet_right.setAngle(8);
+        jet_left.setStatic(true);
+        jet_right.setStatic(true);
+        jet_left.setAlpha(0);
+        jet_right.setAlpha(0);
+        // jet_left.setAlpha(0);
+        // jet_right.setAlpha(0);
+
+        ball = this.matter.add.sprite(220, 100, 'ball');
+        ball.setCircle();
+        ball.setFriction(0.005);
+        ball.setBounce(0.95);
+        ball.setAngularVelocity(0.18);
+        // ball.setCollideWorldBounds(true);
+        
+        // ball.body.setGravityY(600);
+
+        // this.matter.add.collider(ball, bumper_left);
+        // this.matter.add.collider(ball, bumper_right);
+
+
+        z = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Z);
+        m = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.M);
+
+        this.add.text(540, 10, '(left flipper: z  right flipper: m)', {
+        fontSize: '12px',
+        fontFamily: 'Courier',
+        color: '#ffffff',
+        testString: 'abc'
+    }).setStroke(0x111111, 6);
+
+
+    }
+
+    function update ()
+    {
+        console.log('test!');
+        // bumper_left.rotation = 0.5
+
+        bumper_left.setAngularVelocity(0);
+        bumper_right.setAngularVelocity(0);
+
+        if (z.isDown)
+        {
+            if(bumper_left.rotation > -0.1){
+                bumper_left.rotation += -0.1;
+                bumper_left.setAngularVelocity(-0.1);                
+            }
+
+
+            this.add.text(300, 680, '??what is this place', {
+                fontSize: '24px',
+        fontFamily: 'Courier',
+        color: '#cc33ff',
+        testString: 'abc'
+    }).setStroke(0x111111, 6);
+            if(jet_left.alpha < 1){
+
+            jet_left.setAlpha(jet_left.alpha + 0.1); }
+
+        } else {
+            jet_left.setAlpha(0);
+        }
+        if (m.isDown)
+        {
+            if(bumper_right.rotation  < 0.1){
+                bumper_right.rotation += 0.1;
+                bumper_right.setAngularVelocity(0.1);              
+            }
+            if (jet_right.alpha < 1) {
+                jet_right.setAlpha(jet_right.alpha + 0.1);
+            }
+        } else{
+            jet_right.setAlpha(0);
+        }
+        if ((z.isDown == false) && (m.isDown == false )) {
+            if (bumper_left.rotation < 0.4) {
+            console.log('should be decreasing?');
+            bumper_left.rotation += 0.2;
+            
+        }
+        if (bumper_right.rotation > - 0.4) {
+            console.log('should be decreasing?');
+            bumper_right.rotation -= 0.2;
+            
+        }
+        }
+
+
+    }
+
+</script>
+
+</body>
+</html>
