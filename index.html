@@ -76,6 +76,11 @@
         this.load.image('robo_float3_splode', 'assets/robo_float_3_splode.png');
         this.load.image('robo_float4_splode', 'assets/robo_float_4_splode.png');
 
+        this.load.image('robo_head', 'assets/robo_head.png');
+        this.load.image('robo_jet', 'assets/robo_jet.png');
+        this.load.image('robo_left_leg', 'assets/robo_left_leg.png');
+        this.load.image('robo_eye', 'assets/robo_eye.png');
+
 
         // this.load.image('bomb', 'assets/bomb.png');
         // this.load.spritesheet('dude',
@@ -93,7 +98,7 @@
     var bumper_right;
     var jet_left;
     var jet_right;
-    var floaty;
+    var floaty, floaty_bump, floaty_bump2, floaty_bump2half, floaty_bump3, floaty_bump4, floaty_bump5;
 
 
 // 	function createEvents() {
@@ -189,7 +194,6 @@
         floaty.name = 'floaty';
         floaty.hits = 0;
 
-        createPinballBoard(this);
         // bumpers = this.physics.add.staticGroup();
 
         // bumpers.create(200, 550, 'ground').setScale(0.5).refreshBody();
@@ -230,7 +234,7 @@
     }).setStroke(0x111111, 6);
 
     this.matterCollision.addOnCollideStart({
-    objectA: [floaty],
+    objectA: [floaty, floaty_bump, floaty_bump2, floaty_bump2half, floaty_bump3, floaty_bump4, floaty_bump5],
     objectB: ball,
     callback: function(eventData) {
         // This function will be invoked any time the player and trap door collide
@@ -241,6 +245,7 @@
 
         // console.log(eventData.gameObjectA === floaty);
         floaty.hits += 1;
+        score += 600;
 
     },
     context: this // Context to apply to the callback function
@@ -260,6 +265,8 @@
 
     var intro = true;
     var direction = 2;
+    var pinballMode = false;
+    var score = 0;
 
     function friendoUpdate(handle, friendo) {
         if (friendo.name == "floaty"){
@@ -334,6 +341,8 @@
                     friendo.hits = 0;
                     direction = 0;
                     explode(handle, friendo);
+                    pinballMode = true;
+                    score = 0
 
 
 
@@ -358,7 +367,7 @@
             fren.x += direction;
         }
     }
-
+    var currentText = false
     function update ()
     {
 
@@ -379,13 +388,15 @@
                 bumper_left.setAngularVelocity(-0.1);                
             }
 
-
+        if (!currentText){
             this.add.text(300, 680, '>> what is this place', {
                 fontSize: '24px',
         fontFamily: 'Courier',
         color: '#cc33ff',
         testString: 'abc'
     }).setStroke(0x111111, 6);
+    currentText = true;
+    }
             if(jet_left.alpha < 1){
 
             jet_left.setAlpha(jet_left.alpha + 0.1); }
@@ -420,7 +431,6 @@
 
     circle_graphics.clear();
 
-
     if (circles != null) {
 
         for(var i = 0; i < circles.length; i++)
@@ -434,8 +444,19 @@
 
     }
     }
+    // if (pinballMode){
+    //     this.add.text(10, 500, score.toString() + ' points!!!', {
+    //             fontSize: '43px',
+    //     fontFamily: 'Courier',
+    //     color: '#cc33ff',
+    //     testString: 'abc'
+    // }).setStroke(0x111111, 6);
+    // console.log(score);
+    // }
 
     }
+
+
 
 var fireball;
 
@@ -473,22 +494,90 @@ async function explode(handle, fren) {
 
   await sleep(500);
 
+  createPinballBoard(handle);
+
 }
 var bumper;
 
 function createPinballBoard(handle){
 
-    bumper = handle.matter.add.circle(300, 100, 25, {
-			label: 'bumper',
-			isStatic: true,
-			render: {
-                fillStyle: '#F35e66',
-                strokeStyle: 'black',
-                lineWidth: 3
-			}
-		});
-        bumper.restitution = 1.5;
+    // bumper = handle.matter.add.circle(300, 100, 25, {
+	// 		label: 'bumper',
+	// 		isStatic: true,
+	// 		render: {
+    //             fillStyle: '#F35e66',
+    //             strokeStyle: 'black',
+    //             lineWidth: 3
+	// 		}
+	// 	});
+    //     bumper.restitution = 1.5;
+    floaty_bump = handle.matter.add.sprite(320, 190, 'robo_head');
+    floaty_bump.setCircle();
+    floaty_bump.setFriction(0.005);
+    floaty_bump.setBounce(3.5);
+    floaty_bump.setAngularVelocity(0.18);
+    floaty_bump.setStatic(true);
+    floaty_bump.name = 'floaty_bump';
+    floaty_bump.hits = 0;
+    floaty_bump.rotation = 0.15;
+    floaty_bump.restitution = 1.5;
     
+    floaty_bump2 = handle.matter.add.sprite(524, 150, 'robo_jet');
+    floaty_bump2.setCircle();
+    floaty_bump2.setFriction(0.005);
+    floaty_bump2.setBounce(3.5);
+    floaty_bump2.setAngularVelocity(0.18);
+    floaty_bump2.setStatic(true);
+    floaty_bump2.name = 'floaty_bump2';
+    floaty_bump2.rotation = -0.1;
+    floaty_bump2.restitution = 1.5;
+
+    floaty_bump2half = handle.matter.add.sprite(460, 150, 'robo_jet');
+    floaty_bump2half.setCircle();
+    floaty_bump2half.setFriction(0.005);
+    floaty_bump2half.setBounce(3.5);
+    floaty_bump2half.setAngularVelocity(0.18);
+    floaty_bump2half.setStatic(true);
+    floaty_bump2half.name = 'floaty_bump2half';
+    floaty_bump2half.rotation = 0.1;
+    floaty_bump2half.restitution = 1.5;
+
+
+    floaty_bump3 = handle.matter.add.sprite(525, 300, 'robo_left_leg');
+    floaty_bump3.setCircle();
+    floaty_bump3.setFriction(0.005);
+    floaty_bump3.setBounce(3.5);
+    floaty_bump3.setAngularVelocity(0.18);
+    floaty_bump3.setStatic(true);
+    floaty_bump3.name = 'floaty_bump3';
+    floaty_bump3.hits = 0;
+    floaty_bump3.restitution = 1.5;
+
+
+    floaty_bump4 = handle.matter.add.sprite(280, 90, 'robo_eye');
+    floaty_bump4.setCircle();
+    floaty_bump4.setFriction(0.005);
+    floaty_bump4.setBounce(3.5);
+    floaty_bump4.setAngularVelocity(0.18);
+    floaty_bump4.setStatic(true);
+    floaty_bump4.name = 'floaty_bump4';
+    floaty_bump4.hits = 0;
+    floaty_bump4.restitution = 1.5;
+
+
+    floaty_bump5 = handle.matter.add.sprite(270, 150, 'robo_eye');
+    floaty_bump5.setCircle();
+    floaty_bump5.setFriction(0.005);
+    floaty_bump5.setBounce(0.95);
+    floaty_bump5.setAngularVelocity(0.18);
+    floaty_bump5.setStatic(true);
+    floaty_bump5.name = 'floaty_bump5';
+    floaty_bump5.hits = 0;
+    floaty_bump5.restitution = 1.5;
+
+
+
+
 
 }
 
