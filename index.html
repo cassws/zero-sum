@@ -67,6 +67,11 @@
         this.load.image('robo_float3', 'assets/robo_float_3.png');
         this.load.image('robo_float4', 'assets/robo_float_4.png');
 
+        this.load.image('robo_float1_hit', 'assets/robo_float_1_hit.png')
+        this.load.image('robo_float2_hit', 'assets/robo_float_2_hit.png');
+        this.load.image('robo_float3_hit', 'assets/robo_float_3_hit.png');
+        this.load.image('robo_float4_hit', 'assets/robo_float_4_hit.png');
+
         // this.load.image('bomb', 'assets/bomb.png');
         // this.load.spritesheet('dude',
         // 'assets/dude.png',
@@ -112,6 +117,19 @@
             frameRate: 8,
             repeat: -1
         })
+
+        this.anims.create({
+            key: 'hit',
+            frames: [
+                { key: 'robo_float1'},
+                { key: 'robo_float2_hit'},
+                { key: 'robo_float3_hit'},
+                { key: 'robo_float4_hit', duration: 50}
+            ],
+            frameRate: 8,
+            repeat: -1
+        })
+
 
         this.add.image(0, 0, 'backsky').setOrigin(0,0);
 
@@ -198,6 +216,7 @@
         // bodyA & bodyB are the Matter bodies of the player and door respectively
         // gameObjectA & gameObjectB are the player and door respectively
         // pair is the raw Matter pair data
+        floaty.play('hit')
         console.log(eventData.gameObjectA === floaty);
         this.add.text(550, 200, 'owwwwwww!', {
         fontSize: '24px',
