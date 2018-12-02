@@ -45,6 +45,7 @@
     };
     var z;
     var m;
+    var circles = null;
 
     var game = new Phaser.Game(config);
     
@@ -105,6 +106,8 @@
 // })
 			
 // 		}); }
+
+    var circle_graphics;
 
 
     function create ()
@@ -185,6 +188,8 @@
         floaty.setStatic(true);
         floaty.name = 'floaty';
         floaty.hits = 0;
+
+        createPinballBoard(this);
         // bumpers = this.physics.add.staticGroup();
 
         // bumpers.create(200, 550, 'ground').setScale(0.5).refreshBody();
@@ -240,6 +245,10 @@
     },
     context: this // Context to apply to the callback function
     });
+
+    circle_graphics = this.add.graphics({ lineStyle: { lineWidth: 5,
+     color: 0xefefef } });
+
 
 
     }
@@ -408,9 +417,28 @@
         }
 
     friendoUpdate(this, floaty);
+
+    circle_graphics.clear();
+
+
+    if (circles != null) {
+
+        for(var i = 0; i < circles.length; i++)
+    {
+        circles[i].radius += 3;
+        circle_graphics.strokeCircleShape(circles[i]);
+        if(circles[i].radius > 800)
+        {
+            circles.splice(i, 1);
+        }
+
+    }
+    }
+
     }
 
 var fireball;
+
 
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
@@ -420,11 +448,51 @@ function sleep(ms) {
 
 async function explode(handle, fren) {
   console.log('Waiting for animation to resolve');
-  await sleep(3000);
+  await sleep(2000);
   console.log('Start explode animation');
 
 
+  if(circles == null){
+
+    var circle = new Phaser.Geom.Circle(fren.x, fren.y, 0);
+
+    circles = [circle];
+
+    for(var i = 0; i < 80; i++)
+    {
+        circle = Phaser.Geom.Circle.Clone(circle);
+        circle.radius += 1;
+
+        Phaser.Geom.Circle.CircumferencePoint(circle, i / 20 * Phaser.Math.PI2, circle);
+
+        circles.push(circle);
+    }
+    fren.x = -50;
+    fren.y = -50;
+  }
+
+  await sleep(500);
+
 }
+var bumper;
+
+function createPinballBoard(handle){
+
+    bumper = handle.matter.add.circle(300, 100, 25, {
+			label: 'bumper',
+			isStatic: true,
+			render: {
+                fillStyle: '#F35e66',
+                strokeStyle: 'black',
+                lineWidth: 3
+			}
+		});
+        bumper.restitution = 1.5;
+    
+
+}
+
+
 </script>
 
 </body>
