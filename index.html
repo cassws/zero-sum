@@ -368,6 +368,7 @@
         }
     }
     var currentText = false
+    var theText;
     function update ()
     {
 
@@ -389,7 +390,7 @@
             }
 
         if (!currentText){
-            this.add.text(300, 680, '>> what is this place', {
+            theText = this.add.text(300, 680, '>> what is this place', {
                 fontSize: '24px',
         fontFamily: 'Courier',
         color: '#cc33ff',
@@ -444,15 +445,9 @@
 
     }
     }
-    // if (pinballMode){
-    //     this.add.text(10, 500, score.toString() + ' points!!!', {
-    //             fontSize: '43px',
-    //     fontFamily: 'Courier',
-    //     color: '#cc33ff',
-    //     testString: 'abc'
-    // }).setStroke(0x111111, 6);
-    // console.log(score);
-    // }
+    if (pinballMode){
+        theText.destroy();
+    }
 
     }
 
