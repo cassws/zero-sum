@@ -4,8 +4,7 @@
     <meta charset="UTF-8" />
     <title>ZERO SUM</title>
     <script src="//cdn.jsdelivr.net/npm/phaser@3.11.0/dist/phaser.js"></script>
-    <!-- <script src="//cdnjs.cloudflare.com/ajax/libs/matter-js/0.12.0/matter.js"></script> -->
-    <style type="text/css">
+    <script src="//cdn.jsdelivr.net/npm/phaser-matter-collision-plugin"></script>    <style type="text/css">
         body {
             margin: 0;
         }
@@ -33,14 +32,22 @@
             preload: preload,
             create: create,
             update: update
-        }
+        },
+        plugins: {
+    scene: [
+      {
+        plugin: PhaserMatterCollisionPlugin, // The plugin class
+        key: "matterCollision", // Where to store in Scene.Systems, e.g. scene.sys.matterCollision
+        mapping: "matterCollision" // Where to store in the Scene, e.g. scene.matterCollision
+      }
+    ]
+  }
     };
     var z;
     var m;
 
     var game = new Phaser.Game(config);
-
-
+    
     function preload ()
     {
         this.load.image('backsky', 'assets/backsky.png');
@@ -65,6 +72,7 @@
         // 'assets/dude.png',
         // { frameWidth: 32, frameHeight: 48}
         // );
+        // createEvents()
     }
 
 
@@ -76,6 +84,19 @@
     var jet_left;
     var jet_right;
     var floaty;
+
+
+// 	function createEvents() {
+// 		// events for when the pinball hits stuff
+// 		this.matter.world.on('collisionstart', function(event) {
+// 			let pairs = event.pairs;
+// 			pairs.forEach(function(pair) {
+// 				if (pair.bodyB.label === 'pinball') {
+//                     console.log(pair.BodyA.label); };
+// })
+			
+// 		}); }
+
 
     function create ()
     {
@@ -128,6 +149,7 @@
         floaty.setBounce(0.95);
         floaty.setAngularVelocity(0.18);
         floaty.setStatic(true);
+        floaty.name = 'floaty';
         // bumpers = this.physics.add.staticGroup();
 
         // bumpers.create(200, 550, 'ground').setScale(0.5).refreshBody();
@@ -167,12 +189,31 @@
         testString: 'abc'
     }).setStroke(0x111111, 6);
 
+    this.matterCollision.addOnCollideStart({
+    objectA: [floaty],
+    objectB: ball,
+    callback: function(eventData) {
+        // This function will be invoked any time the player and trap door collide
+        const { bodyA, bodyB, gameObjectA, gameObjectB, pair } = eventData;
+        // bodyA & bodyB are the Matter bodies of the player and door respectively
+        // gameObjectA & gameObjectB are the player and door respectively
+        // pair is the raw Matter pair data
+        console.log(eventData.gameObjectA === floaty);
+        this.add.text(550, 200, 'owwwwwww!', {
+        fontSize: '24px',
+        fontFamily: 'Courier',
+        color: '#ffffff',
+        testString: 'abc'
+    }).setStroke(0x111111, 6);
+    },
+    context: this // Context to apply to the callback function
+    });
+
 
     }
 
     function update ()
     {
-        console.log('test!');
 
         // bumper_left.rotation = 0.5
 
@@ -216,12 +257,10 @@
         }
         if ((z.isDown == false) && (m.isDown == false )) {
             if (bumper_left.rotation < 0.4) {
-            console.log('should be decreasing?');
             bumper_left.rotation += 0.2;
             
         }
         if (bumper_right.rotation > - 0.4) {
-            console.log('should be decreasing?');
             bumper_right.rotation -= 0.2;
             
         }
@@ -229,6 +268,7 @@
 
 
     }
+
 
 </script>
 
