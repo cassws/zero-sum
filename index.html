@@ -57,8 +57,6 @@
         this.load.image('jet_left', 'assets/jet_right.png');
         this.load.image('jet_right', 'assets/jet_left.png');
 
-        this.load.image('star', 'assets/star.png');
-
         this.load.image('lil_robo', 'assets/lil_robo.png');
         this.load.image('ball', 'assets/glitch_ball.png');
 
@@ -76,6 +74,7 @@
         this.load.image('robo_float2_splode', 'assets/robo_float_2_splode.png');
         this.load.image('robo_float3_splode', 'assets/robo_float_3_splode.png');
         this.load.image('robo_float4_splode', 'assets/robo_float_4_splode.png');
+
 
         // this.load.image('bomb', 'assets/bomb.png');
         // this.load.spritesheet('dude',
@@ -146,6 +145,7 @@
             frameRate: 2,
             repeat: 0
         })
+
 
         this.add.image(0, 0, 'backsky').setOrigin(0,0);
 
@@ -324,7 +324,7 @@
                     friendo.play('splode');
                     friendo.hits = 0;
                     direction = 0;
-                    explode(friendo);
+                    explode(handle, friendo);
 
 
 
@@ -410,15 +410,19 @@
     friendoUpdate(this, floaty);
     }
 
+var fireball;
+
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-async function explode(fren) {
+
+
+async function explode(handle, fren) {
   console.log('Waiting for animation to resolve');
-  await sleep(4000);
+  await sleep(3000);
   console.log('Start explode animation');
-//   fren.body.destroy();
+
 
 }
 </script>
