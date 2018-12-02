@@ -62,15 +62,20 @@
         this.load.image('lil_robo', 'assets/lil_robo.png');
         this.load.image('ball', 'assets/glitch_ball.png');
 
-        this.load.image('robo_float1', 'assets/robo_float_1.png')
+        this.load.image('robo_float1', 'assets/robo_float_1.png');
         this.load.image('robo_float2', 'assets/robo_float_2.png');
         this.load.image('robo_float3', 'assets/robo_float_3.png');
         this.load.image('robo_float4', 'assets/robo_float_4.png');
 
-        this.load.image('robo_float1_hit', 'assets/robo_float_1_hit.png')
+        this.load.image('robo_float1_hit', 'assets/robo_float_1_hit.png');
         this.load.image('robo_float2_hit', 'assets/robo_float_2_hit.png');
         this.load.image('robo_float3_hit', 'assets/robo_float_3_hit.png');
         this.load.image('robo_float4_hit', 'assets/robo_float_4_hit.png');
+
+        this.load.image('robo_float1_splode', 'assets/robo_float_1_splode.png');
+        this.load.image('robo_float2_splode', 'assets/robo_float_2_splode.png');
+        this.load.image('robo_float3_splode', 'assets/robo_float_3_splode.png');
+        this.load.image('robo_float4_splode', 'assets/robo_float_4_splode.png');
 
         // this.load.image('bomb', 'assets/bomb.png');
         // this.load.spritesheet('dude',
@@ -130,6 +135,17 @@
             repeat: -1
         })
 
+        this.anims.create({
+            key: 'splode',
+            frames: [
+                { key: 'robo_float1'},
+                { key: 'robo_float2_splode'},
+                { key: 'robo_float3_splode'},
+                { key: 'robo_float4_splode', duration: 50}
+            ],
+            frameRate: 2,
+            repeat: 0
+        })
 
         this.add.image(0, 0, 'backsky').setOrigin(0,0);
 
@@ -161,13 +177,14 @@
         table.closePath();
         table.strokePath();
 
-        floaty = this.matter.add.sprite(-80, 288, 'robo_float1').play('float');
+        floaty = this.matter.add.sprite(-380, 288, 'robo_float1').play('float');
         floaty.setCircle();
         floaty.setFriction(0.005);
         floaty.setBounce(0.95);
         floaty.setAngularVelocity(0.18);
         floaty.setStatic(true);
         floaty.name = 'floaty';
+        floaty.hits = 0;
         // bumpers = this.physics.add.staticGroup();
 
         // bumpers.create(200, 550, 'ground').setScale(0.5).refreshBody();
@@ -216,31 +233,136 @@
         // bodyA & bodyB are the Matter bodies of the player and door respectively
         // gameObjectA & gameObjectB are the player and door respectively
         // pair is the raw Matter pair data
-        floaty.play('hit')
-        console.log(eventData.gameObjectA === floaty);
-        this.add.text(550, 200, 'owwwwwww!', {
-        fontSize: '24px',
-        fontFamily: 'Courier',
-        color: '#ffffff',
-        testString: 'abc'
-    }).setStroke(0x111111, 6);
+
+        // console.log(eventData.gameObjectA === floaty);
+        floaty.hits += 1;
+
     },
     context: this // Context to apply to the callback function
     });
 
 
     }
+    var characterDialogue = null;
+    var dialogue2 = null;
+    var dialogue3 = null;
+    var dialogue4 = null;
+    var dialogue5 = null;
+
+    var intro = true;
+    var direction = 2;
+
+    function friendoUpdate(handle, friendo) {
+        if (friendo.name == "floaty"){
+            switch (friendo.hits) {
+                case 1:
+                    if (characterDialogue == null){
+                    characterDialogue = handle.add.text(550, 200, 'owwwww', {
+                fontSize: '24px',
+                fontFamily: 'Courier',
+                color: '#ffffff',
+                testString: 'abc'
+            }).setStroke(0x111111, 6)};
+                    break;
+                case 2:
+                    characterDialogue.destroy();
+                    // characterDialogue == null;
+                    break;
+                case 3:
+                    if (dialogue2 == null){
+                        console.log(3);
+                        dialogue2 = handle.add.text(50, 400, 'owwwwwwwww!!', {
+                        fontSize: '28px',
+                        fontFamily: 'Courier',
+                        color: '#ffffff',
+                        testString: 'abc'
+                    }).setStroke(0x111111, 6)};
+
+                    break;
+                case 4:
+                    console.log(4);
+                    dialogue2.destroy();
+                    break;
+                case 5:
+                if (dialogue3 == null){
+                        friendo.play('hit');
+
+                        console.log(5);
+                        dialogue3 = handle.add.text(200, 200, 'NOT NICE OF YOU VERY OWOWOW', {
+                        fontSize: '32px',
+                        fontFamily: 'Courier',
+                        color: '#ffffff',
+                        testString: 'abc'
+                    }).setStroke(0x111111, 6)};
+                    break;
+                case 6:
+                    if (dialogue4 == null){
+                        console.log(6);
+                        dialogue4 = handle.add.text(170, 50, 'PAINFUL NOT NICE', {
+                        fontSize: '64px',
+                        fontFamily: 'Courier',
+                        color: '#ffffff',
+                        testString: 'abc'
+                    }).setStroke(0x111111, 6);
+                };
+                    break;
+                case 7:
+                console.log(7);
+                    if (dialogue5 == null){
+                        dialogue5 = handle.add.text(50, 450, 'ow ow ow', {
+                        fontSize: '128px',
+                        fontFamily: 'Courier',
+                        color: '#ffffff',
+                        testString: 'abc'
+                    }).setStroke(0x111111, 6);
+                };
+                    break;
+                case 8:
+                    dialogue3.destroy();
+                    dialogue4.destroy();
+                    dialogue5.destroy();
+                    friendo.play('splode');
+                    friendo.hits = 0;
+                    direction = 0;
+                    explode(friendo);
+
+
+
+            }
+
+
+
+        }
+    }
+
+    function moveFriendo(fren){
+        if (intro == true){
+            fren.x += direction;
+        }
+        if (fren.x > 600){
+            intro = false;
+        }
+        if (intro == false){
+            if ((fren.x > 600) || (fren.x < 200)){
+                direction = direction * -1;
+            }
+            fren.x += direction;
+        }
+    }
 
     function update ()
     {
 
         // bumper_left.rotation = 0.5
+        if( ball.y > 578){
+            ball.y = 50;
+        }
 
         bumper_left.setAngularVelocity(0);
         bumper_right.setAngularVelocity(0);
 
-        floaty.x += 1;
-
+        // floaty.x += 0;
+        moveFriendo(floaty);
         if (z.isDown)
         {
             if(bumper_left.rotation > -0.1){
@@ -285,10 +407,20 @@
         }
         }
 
-
+    friendoUpdate(this, floaty);
     }
 
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
 
+async function explode(fren) {
+  console.log('Waiting for animation to resolve');
+  await sleep(4000);
+  console.log('Start explode animation');
+//   fren.body.destroy();
+
+}
 </script>
 
 </body>
