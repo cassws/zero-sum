@@ -17,3 +17,9 @@ The project was funded through Kickstarter - http://kck.st/dogX5W
 **Lightning bolts**
 
 Public Domain via [OpenGameArt](https://opengameart.org/content/lightning)
+
+**Cute little jetpack robot**
+[Bluerobin 2 on OpenGameArt](https://opengameart.org/content/jetpack-robot)
+
+**Pinball sphere**
+[siligame on OpenGameArt](https://opengameart.org/content/ball-animation-include-vector-file)
